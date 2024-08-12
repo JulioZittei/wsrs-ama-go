@@ -1,0 +1,12 @@
+{
+  "REQUIRED": "é obrigatório.",
+  "INVALID_JSON": "json inválido.",
+  "MIN": "deve ser no mínimo {{.Arg1}}.",
+  "MAX": "deve ser no máximo {{.Arg1}}.",
+  "EMAIL": "deve ser um e-mail bem formado.",
+  "BAD_REQUEST": "Falha na requisição. Por favor verifique os dados enviados.",
+  "NOT_FOUND": "Recurso não encontrado.",
+  "RESOURCE_NOT_FOUND": "{{.Arg1}} não encontrado(a).",
+  "UNPROCESSABLE_ENTITY": "Falha no processamento de entidade. Por favor verifique os dados enviados.",
+  "INTERNAL_SERVER_ERROR": "Erro interno do servidor. Por favor tente novamente mais tarde."
+}

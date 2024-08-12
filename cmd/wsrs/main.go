@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/JulioZittei/wsrs-ama-go/internal/api"
+	"github.com/JulioZittei/wsrs-ama-go/internal/app"
 	"github.com/JulioZittei/wsrs-ama-go/internal/store/pgstore"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -37,11 +37,12 @@ func main() {
 		panic(err)
 	}
 
-	handler := api.NewHandler(pgstore.New(pool))
+	app := app.NewApplication(pgstore.New(pool))
+	app.Init()
 
 	server := &http.Server{
 		Addr:    ":8080",
-		Handler: handler,
+		Handler: app.GetHandler(),
 	}
 
 	go func() {

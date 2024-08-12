@@ -1,0 +1,12 @@
+{
+  "REQUIRED": "is required.",
+  "INVALID_JSON": "invalid json.",
+  "MIN": "must be at least {{.Arg1}}.",
+  "MAX": "must be at most {{.Arg1}}.",
+  "EMAIL": "must be well-formed.",
+  "BAD_REQUEST": "Bad Request. Please verify the data sent.",
+  "NOT_FOUND": "Resource not found.",
+  "RESOURCE_NOT_FOUND": "{{.Arg1}} not found.",
+  "UNPROCESSABLE_ENTITY": "Unprocessable entity. Please verify the data sent.",
+  "INTERNAL_SERVER_ERROR": "Internal Server Error. Please try again later."
+}
