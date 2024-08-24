@@ -7,6 +7,6 @@ type RoomRequest struct {
 }
 
 type MessageRequest struct {
-	RoomID  uuid.UUID
-	Message string `json:"message" validate:"required"`
+	RoomID  uuid.UUID `json:"-"`
+	Message string    `json:"message" validate:"required"`
 }

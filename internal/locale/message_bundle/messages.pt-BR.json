@@ -1,6 +1,8 @@
 {
   "REQUIRED": "é obrigatório.",
   "INVALID_JSON": "json inválido.",
+  "INVALID_ROOM_ID": "room id inválido.",
+  "INVALID_MESSAGE_ID": "message id inválido.",
   "MIN": "deve ser no mínimo {{.Arg1}}.",
   "MAX": "deve ser no máximo {{.Arg1}}.",
   "EMAIL": "deve ser um e-mail bem formado.",
