@@ -1,0 +1,428 @@
+basePath: /api/v1
+definitions:
+  request.MessageRequest:
+    properties:
+      message:
+        type: string
+    required:
+    - message
+    type: object
+  request.RoomRequest:
+    properties:
+      subject:
+        type: string
+    required:
+    - subject
+    type: object
+  response.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      detail:
+        type: string
+      instance:
+        type: string
+      invalid_params:
+        items:
+          $ref: '#/definitions/response.ErrorsParam'
+        type: array
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  response.ErrorsParam:
+    properties:
+      message:
+        type: string
+      param:
+        type: string
+    type: object
+  response.MessageResponse:
+    properties:
+      id:
+        type: string
+      is_answered:
+        type: boolean
+      likes_count:
+        type: integer
+      message:
+        type: string
+      room_id:
+        type: string
+    type: object
+  response.RoomResponse:
+    properties:
+      id:
+        type: string
+      subject:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a API documentation for Ask Me Anything
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Ask Me Anything API
+  version: "1.0"
+paths:
+  /rooms:
+    get:
+      consumes:
+      - application/json
+      description: Get Rooms
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.RoomResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get Rooms
+      tags:
+      - Room
+    post:
+      consumes:
+      - application/json
+      description: Create a new room
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.RoomRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.RoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create room
+      tags:
+      - Room
+  /rooms/{room_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get room
+      parameters:
+      - description: Room ID
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.RoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get Room
+      tags:
+      - Room
+  /rooms/{room_id}/messages:
+    get:
+      consumes:
+      - application/json
+      description: Get messages from a room
+      parameters:
+      - description: Room ID
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.MessageResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get Room Messages
+      tags:
+      - Room Message
+    post:
+      consumes:
+      - application/json
+      description: Create a new message for room
+      parameters:
+      - description: Room ID
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.MessageRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create Message
+      tags:
+      - Room Message
+  /rooms/{room_id}/messages/{message_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Message
+      parameters:
+      - description: Room ID
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: Message ID
+        in: path
+        name: message_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get Message
+      tags:
+      - Room Message
+  /rooms/{room_id}/messages/{message_id}/answer:
+    patch:
+      consumes:
+      - application/json
+      description: Mark a message as answered
+      parameters:
+      - description: Room ID
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: Message ID
+        in: path
+        name: message_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Mark Message As Answered
+      tags:
+      - Room Message
+  /rooms/{room_id}/messages/{message_id}/like:
+    delete:
+      consumes:
+      - application/json
+      description: Unlike Room Message
+      parameters:
+      - description: Room ID
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: Message ID
+        in: path
+        name: message_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Unlike Message
+      tags:
+      - Room Message
+    patch:
+      consumes:
+      - application/json
+      description: Like Room Message
+      parameters:
+      - description: Room ID
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: Message ID
+        in: path
+        name: message_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Like Message
+      tags:
+      - Room Message
+swagger: "2.0"

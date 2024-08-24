@@ -14,6 +14,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/gorilla/websocket"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type App struct {
@@ -62,11 +63,13 @@ func (app *App) Init() {
 	})
 
 	// config routes and handlers
+	router.Mount("/swagger", httpSwagger.WrapHandler)
 	router.Route("/api/v1", func(r chi.Router) {
 		r.Get("/subscribe/{room_id}", roomsController.SubscribeRoom)
 		r.Route("/rooms", func(r chi.Router) {
 			r.Post("/", exception_handler.ExceptionHandler(roomsController.CreateRoom))
 			r.Get("/", exception_handler.ExceptionHandler(roomsController.GetRooms))
+			r.Get("/{room_id}", exception_handler.ExceptionHandler(roomsController.GetRoom))
 
 			r.Route("/{room_id}/messages", func(r chi.Router) {
 				r.Get("/", exception_handler.ExceptionHandler(roomsController.GetRoomMessages))

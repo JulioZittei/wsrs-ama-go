@@ -10,12 +10,27 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/JulioZittei/wsrs-ama-go/docs"
 	"github.com/JulioZittei/wsrs-ama-go/internal/app"
 	"github.com/JulioZittei/wsrs-ama-go/internal/store/pgstore"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 )
 
+// @title Ask Me Anything API
+// @version 1.0
+// @description This is a API documentation for Ask Me Anything
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
+// @BasePath /api/v1
 func main() {
 	if err := godotenv.Load(); err != nil {
 		panic(err)

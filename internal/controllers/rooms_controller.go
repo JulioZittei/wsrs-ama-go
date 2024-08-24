@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"sync"
 
+	_ "github.com/JulioZittei/wsrs-ama-go/docs"
 	"github.com/JulioZittei/wsrs-ama-go/internal/controllers/contracts/request"
 	"github.com/JulioZittei/wsrs-ama-go/internal/controllers/contracts/response"
 	"github.com/JulioZittei/wsrs-ama-go/internal/controllers/contracts/socket"
@@ -34,6 +35,18 @@ func NewRoomsController(service *services.RoomsService, upgrader websocket.Upgra
 	}
 }
 
+// @Summary Create room
+// @Description Create a new room
+// @Tags Room
+// @Accept json
+// @Produce json
+// @Param request body request.RoomRequest true "Request body"
+// @Success 201 {object} response.RoomResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /rooms [post]
 func (c *RoomsController) CreateRoom(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	var requestBody = request.RoomRequest{}
 	if err := decoder.DecodeJSON(r.Context(), r.Body, &requestBody); err != nil {
@@ -52,11 +65,24 @@ func (c *RoomsController) CreateRoom(w http.ResponseWriter, r *http.Request) (in
 	return data, 201, err
 }
 
+// @Summary Create Message
+// @Description Create a new message for room
+// @Tags Room Message
+// @Accept json
+// @Produce json
+// @Param room_id path string true "Room ID"
+// @Param request body request.MessageRequest true "Request body"
+// @Success 201 {object} response.MessageResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /rooms/{room_id}/messages [post]
 func (c *RoomsController) CreateRoomMessage(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	rawRoomId := chi.URLParam(r, "room_id")
 	roomId, err := uuid.Parse(rawRoomId)
 	if err != nil {
-		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid room id")
+		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_ROOM_ID")
 	}
 
 	var requestBody = request.MessageRequest{}
@@ -90,43 +116,91 @@ func (c *RoomsController) CreateRoomMessage(w http.ResponseWriter, r *http.Reque
 	return data, 201, err
 }
 
+// @Summary Get Rooms
+// @Description Get Rooms
+// @Tags Room
+// @Accept json
+// @Produce json
+// @Success 200 {array} response.RoomResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /rooms [get]
 func (c *RoomsController) GetRooms(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	room, err := c.service.GetRooms(r.Context())
 	return room, 200, err
 }
 
+// @Summary Get Room Messages
+// @Description Get messages from a room
+// @Tags Room Message
+// @Accept json
+// @Produce json
+// @Param room_id path string true "Room ID"
+// @Success 200 {array} response.MessageResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /rooms/{room_id}/messages [get]
 func (c *RoomsController) GetRoomMessages(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	rawRoomId := chi.URLParam(r, "room_id")
 	roomId, err := uuid.Parse(rawRoomId)
 	if err != nil {
-		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid room id")
+		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_ROOM_ID")
 	}
 
 	rooms, err := c.service.GetRoomMessages(r.Context(), roomId)
 	return rooms, 200, err
 }
 
+// @Summary Get Room
+// @Description Get room
+// @Tags Room
+// @Accept json
+// @Produce json
+// @Param room_id path string true "Room ID"
+// @Success 200 {object} response.RoomResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /rooms/{room_id} [get]
 func (c *RoomsController) GetRoom(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	rawRoomId := chi.URLParam(r, "room_id")
 	roomId, err := uuid.Parse(rawRoomId)
 	if err != nil {
-		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid room id")
+		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_ROOM_ID")
 	}
 	room, err := c.service.GetRoom(r.Context(), roomId)
 	return room, 200, err
 }
 
+// @Summary Get Message
+// @Description Get Message
+// @Tags Room Message
+// @Accept json
+// @Produce json
+// @Param room_id path string true "Room ID"
+// @Param message_id path string true "Message ID"
+// @Success 200 {object} response.MessageResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /rooms/{room_id}/messages/{message_id} [get]
 func (c *RoomsController) GetRoomMessage(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	rawRoomId := chi.URLParam(r, "room_id")
 	roomId, err := uuid.Parse(rawRoomId)
 	if err != nil {
-		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid room id")
+		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_ROOM_ID")
 	}
 
 	rawMessageId := chi.URLParam(r, "message_id")
 	messageId, err := uuid.Parse(rawMessageId)
 	if err != nil {
-		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid message id")
+		return nil, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_MESSAGE_ID")
 	}
 
 	message, err := c.service.GetRoomMessage(r.Context(), roomId, messageId)
@@ -134,17 +208,30 @@ func (c *RoomsController) GetRoomMessage(w http.ResponseWriter, r *http.Request)
 	return message, 200, err
 }
 
+// @Summary Like Message
+// @Description Like Room Message
+// @Tags Room Message
+// @Accept json
+// @Produce json
+// @Param room_id path string true "Room ID"
+// @Param message_id path string true "Message ID"
+// @Success 200 {integer} int
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /rooms/{room_id}/messages/{message_id}/like [patch]
 func (c *RoomsController) LikeRoomMessage(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	rawRoomId := chi.URLParam(r, "room_id")
 	roomId, err := uuid.Parse(rawRoomId)
 	if err != nil {
-		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid room id")
+		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_ROOM_ID")
 	}
 
 	rawMessageId := chi.URLParam(r, "message_id")
 	messageId, err := uuid.Parse(rawMessageId)
 	if err != nil {
-		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid message id")
+		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_MESSAGE_ID")
 	}
 	likeCount, err := c.service.LikeRoomMessage(r.Context(), roomId, messageId)
 
@@ -159,17 +246,31 @@ func (c *RoomsController) LikeRoomMessage(w http.ResponseWriter, r *http.Request
 
 	return likeCount, 200, err
 }
+
+// @Summary Unlike Message
+// @Description Unlike Room Message
+// @Tags Room Message
+// @Accept json
+// @Produce json
+// @Param room_id path string true "Room ID"
+// @Param message_id path string true "Message ID"
+// @Success 200 {integer} int
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /rooms/{room_id}/messages/{message_id}/like [delete]
 func (c *RoomsController) RemoveLikeRoomMessage(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	rawRoomId := chi.URLParam(r, "room_id")
 	roomId, err := uuid.Parse(rawRoomId)
 	if err != nil {
-		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid room id")
+		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_ROOM_ID")
 	}
 
 	rawMessageId := chi.URLParam(r, "message_id")
 	messageId, err := uuid.Parse(rawMessageId)
 	if err != nil {
-		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid message id")
+		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_MESSAGE_ID")
 	}
 	likeCount, err := c.service.RemoveLikeRoomMessage(r.Context(), roomId, messageId)
 
@@ -185,17 +286,30 @@ func (c *RoomsController) RemoveLikeRoomMessage(w http.ResponseWriter, r *http.R
 	return likeCount, 200, err
 }
 
+// @Summary Mark Message As Answered
+// @Description Mark a message as answered
+// @Tags Room Message
+// @Accept json
+// @Produce json
+// @Param room_id path string true "Room ID"
+// @Param message_id path string true "Message ID"
+// @Success 200
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Failure 422 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /rooms/{room_id}/messages/{message_id}/answer [patch]
 func (c *RoomsController) AnswerRoomMessage(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	rawRoomId := chi.URLParam(r, "room_id")
 	roomId, err := uuid.Parse(rawRoomId)
 	if err != nil {
-		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid room id")
+		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_ROOM_ID")
 	}
 
 	rawMessageId := chi.URLParam(r, "message_id")
 	messageId, err := uuid.Parse(rawMessageId)
 	if err != nil {
-		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "invalid message id")
+		return 0, 400, internal_errors.NewErrBadRequest(r.Context(), "INVALID_MESSAGE_ID")
 	}
 
 	go c.notifyClients(socket.Message{
